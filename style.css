@@ -63,7 +63,7 @@ header{
 .logo{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--pink-deep);letter-spacing:.02em}
 .logo span{color:var(--text)}
 .menu{display:flex;gap:30px;list-style:none}
-.menu a{font-size:.95rem;font-weight:400;color:var(--text);transition:color .2s}
+.menu a{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:500;letter-spacing:.06em;color:var(--text);transition:color .2s}
 .menu a:hover{color:var(--pink-deep)}
 .nav-cta{font-size:.92rem;padding:11px 22px}
 .burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px}
@@ -179,7 +179,9 @@ footer{background:var(--text);color:#f6e3ea;padding:60px 0 28px}
 .foot-social{display:flex;gap:14px}
 .foot-social a{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background .2s}
 .foot-social a:hover{background:var(--pink-deep)}
-.foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:22px;text-align:center;font-size:.85rem;opacity:.7}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:22px;text-align:center;font-size:.85rem;opacity:.7;display:flex;flex-direction:column;align-items:center;gap:16px}
+.btn-back-top{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.3);color:#f6e3ea;padding:10px 26px;border-radius:999px;font-size:.88rem;font-weight:500;letter-spacing:.04em;transition:background .2s,border-color .2s,transform .2s}
+.btn-back-top:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
 
 /* WhatsApp float */
 .wpp-float{
