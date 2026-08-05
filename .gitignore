@@ -1,0 +1,6 @@
+node_modules/
+dist/
+
+# Personal / working files not part of the site
+Pinterest.pdf
+prompts/
