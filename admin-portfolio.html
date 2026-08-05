@@ -124,6 +124,19 @@ input, select { font-family: inherit; }
   width: var(--sidebar-collapsed-width);
 }
 
+/* ── SIDEBAR OVERLAY (mobile drawer backdrop) ───────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 6, 16, 0.5);
+  z-index: 190;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.sidebar-overlay.active { display: block; opacity: 1; }
+body.no-scroll { overflow: hidden; }
+
 .sidebar__header {
   display: flex;
   align-items: center;
@@ -876,7 +889,7 @@ input, select { font-family: inherit; }
 /* ── GOAL CARDS ──────────────────────────────────────────────── */
 .goal-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
   margin-bottom: 22px;
 }
@@ -1039,17 +1052,72 @@ input, select { font-family: inherit; }
   .settings-layout { grid-template-columns: 1fr; }
   .settings-nav { position: static; display: flex; overflow-x: auto; gap: 4px; }
   .settings-nav__arrow { display: none; }
+  .settings-nav__item { width: auto; flex-shrink: 0; white-space: nowrap; }
+}
+
+/* Off-canvas sidebar drawer for tablet/mobile */
+@media (max-width: 860px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+  }
+  .sidebar--mobile-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 24px rgba(0,0,0,0.25);
+  }
+  /* ignore the desktop icon-only collapse state while in drawer mode */
+  .sidebar--collapsed { width: var(--sidebar-width); }
+  .sidebar--collapsed .sidebar__brand-name,
+  .sidebar--collapsed .sidebar__link-label { display: inline; }
+  .sidebar--collapsed .sidebar__profile-info,
+  .sidebar--collapsed .sidebar__group-label { display: block; }
+  .sidebar--collapsed .sidebar__profile { justify-content: flex-start; padding: 14px; }
+  .main-content,
+  .app-layout.sidebar-collapsed .main-content {
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 720px) {
-  :root {
-    --sidebar-width: var(--sidebar-collapsed-width);
-  }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .page-content { padding: 16px; }
-  .header__search { display: none; }
   .sfield { flex-direction: column; gap: 6px; }
   .sfield__meta { flex: none; padding-top: 0; }
+}
+
+@media (max-width: 640px) {
+  .demo-banner { font-size: 0.7rem; padding: 8px 12px; }
+  .header { padding: 0 14px; gap: 8px; }
+  .header > .header__right > .header__search { display: none; }
+  .header__date { display: none; }
+  .header__title { font-size: 0.85rem; max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .page-content { padding: 14px; }
+  .stats-grid { gap: 10px; }
+  .stat-card { padding: 14px; }
+  .stat-card__value { font-size: 1.3rem; }
+  .charts-row { gap: 10px; }
+  .chart-card { padding: 14px; }
+  .goal-cards { grid-template-columns: 1fr; }
+  .comm-row { flex-direction: column; align-items: stretch; gap: 12px; }
+  .comm-row__info { flex: none; }
+  .prof-goal-row { flex-wrap: wrap; }
+  .prof-goal-row__name { flex: none; }
+  .clients-stats { flex-wrap: wrap; }
+  .mini-stat { flex: 1 1 calc(50% - 6px); min-width: 0; }
+  .page-controls { flex-direction: column; align-items: stretch; }
+  .page-controls > .btn-primary,
+  .page-controls > .btn-outline,
+  .page-controls__actions { width: 100%; }
+  .page-controls__actions .btn-outline,
+  .page-controls__actions .btn-primary { flex: 1; justify-content: center; }
+  .page-controls > .btn-primary,
+  .page-controls > .btn-outline { justify-content: center; }
+  .page-controls .header__search { width: 100% !important; }
+  .settings-section { padding: 18px; }
+}
+
+@media (max-width: 420px) {
+  .stats-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -1166,6 +1234,8 @@ input, select { font-family: inherit; }
       </button>
     </div>
   </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- ── MAIN ──────────────────────────────────────────────────── -->
   <div class="main-content">
@@ -1830,13 +1900,34 @@ document.querySelectorAll('.sidebar__link[data-view]').forEach(btn => {
     document.getElementById('pageTitle').textContent = pageTitles[btn.dataset.view];
     document.querySelector('.page-content').scrollTo?.(0, 0);
     window.scrollTo(0, 0);
+    if (isMobile()) closeMobileMenu();
   });
 });
 
 const appLayout = document.getElementById('appLayout');
 const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const MOBILE_BREAKPOINT = 860;
 let sidebarOpen = true;
+let mobileMenuOpen = false;
+
+function isMobile() { return window.innerWidth <= MOBILE_BREAKPOINT; }
+
+function closeMobileMenu() {
+  mobileMenuOpen = false;
+  sidebar.classList.remove('sidebar--mobile-open');
+  sidebarOverlay.classList.remove('active');
+  document.body.classList.remove('no-scroll');
+}
+
 function toggleSidebar() {
+  if (isMobile()) {
+    mobileMenuOpen = !mobileMenuOpen;
+    sidebar.classList.toggle('sidebar--mobile-open', mobileMenuOpen);
+    sidebarOverlay.classList.toggle('active', mobileMenuOpen);
+    document.body.classList.toggle('no-scroll', mobileMenuOpen);
+    return;
+  }
   sidebarOpen = !sidebarOpen;
   appLayout.classList.toggle('sidebar-collapsed', !sidebarOpen);
   sidebar.classList.toggle('sidebar--collapsed', !sidebarOpen);
@@ -1845,6 +1936,8 @@ function toggleSidebar() {
 }
 document.getElementById('sidebarToggleBtn').addEventListener('click', toggleSidebar);
 document.getElementById('menuToggleBtn').addEventListener('click', toggleSidebar);
+sidebarOverlay.addEventListener('click', closeMobileMenu);
+window.addEventListener('resize', () => { if (!isMobile()) closeMobileMenu(); });
 
 /* ══════════════════════ HELPERS ════════════════════════════════ */
 function fmtBRL(n) { return n.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
