@@ -181,6 +181,8 @@ footer{background:var(--text);color:#f6e3ea;padding:60px 0 28px}
 .foot-social a:hover{background:var(--pink-deep)}
 .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:22px;text-align:center;font-size:.85rem;opacity:.7;display:flex;flex-direction:column;align-items:center;gap:16px}
 .foot-bottom-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.dev-credit{color:var(--pink);text-decoration:none}
+.dev-credit:hover{text-decoration:underline}
 .btn-back-top{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.3);color:#f6e3ea;padding:10px 26px;border-radius:999px;font-size:.88rem;font-weight:500;letter-spacing:.04em;transition:background .2s,border-color .2s,transform .2s}
 .btn-back-top:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6);transform:translateY(-2px)}
 
